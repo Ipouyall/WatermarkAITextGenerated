@@ -77,7 +77,7 @@ def run_generator(config):
             fraction=config.fraction,
             strength=config.strength,
             vocab_size=tokenizer.vocab_size,
-            watermark_key=config.wm_key
+            watermark_key=config.hash_key
         )
     ])
 
