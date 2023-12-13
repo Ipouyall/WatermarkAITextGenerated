@@ -124,23 +124,25 @@ GeneratorConfig(
 
 class Runner:
     @staticmethod
-    def run(config: t.Union[DetectorConfig, GeneratorConfig]):
+    def run(config: t.Union[DetectorConfig, GeneratorConfig], need_report=False):
         if isinstance(config, DetectorConfig):
             print("Starting the Detection task...")
-            Runner._tun_detector(config)
+            report = Runner._tun_detector(config)
         elif isinstance(config, GeneratorConfig):
             print("Starting the Generation task...")
-            Runner._run_generator(config)
+            report = Runner._run_generator(config)
         else:
             print(f"Unknown config {config.__class__.__name__}")
             return
 
         print("Runner exiting successfully!")
+        if need_report:
+            return report
 
     @staticmethod
     def _run_generator(config: GeneratorConfig):
-        run_generator(config)
+        return run_generator(config)
 
     @staticmethod
     def _tun_detector(config: DetectorConfig):
-        run_detector(config)
+        return run_detector(config)

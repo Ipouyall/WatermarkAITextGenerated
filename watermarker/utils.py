@@ -66,19 +66,28 @@ def run_detector(config):
     }
 
     write_json_file(config.input_file.replace('.jsonl', '_z.jsonl'), save_dict)
+    report = {
+        "total": len(save_dict['wm_pred']),
+        "watermarked": sum(save_dict['wm_pred']),
+        "non-watermarked": len(save_dict['wm_pred']) - sum(save_dict['wm_pred']),
+        "avg-z":  sum(save_dict['z_score']) / len(save_dict['z_score']),
+    }
+    report['AI-Generated'] = report['watermarked'] / report['total'] * 100
+    report['Human-Written'] = report['non-watermarked'] / report['total'] * 100
 
     print('Finished!')
 
     print("Detector's report:")
     print(f"\tWatermark threshold:       {config.watermark_threshold}")
-    print(f"\tWatermarked sequences:     {sum(save_dict['wm_pred'])} ({sum(save_dict['wm_pred']) / len(save_dict['wm_pred']) * 100:.3f}%)")
-    print(f"\tNon-watermarked sequences: {len(save_dict['wm_pred']) - sum(save_dict['wm_pred'])} ({(len(save_dict['wm_pred']) - sum(save_dict['wm_pred'])) / len(save_dict['wm_pred']) * 100:.3f}%)")
-    print(f"\tTotal sequences:           {len(save_dict['wm_pred'])}")
-    print(f"\tAverage z-score:           {sum(save_dict['z_score']) / len(save_dict['z_score'])}")
+    print(f"\tWatermarked sequences:     {report['watermarked']} ({report['AI-Generated']:.3f}%)")
+    print(f"\tNon-watermarked sequences: {report['non-watermarked']} ({report['Human-Written']:.3f}%)")
+    print(f"\tTotal sequences:           {report['total']}")
+    print(f"\tAverage z-score:           {report['avg-z']:.3f}")
 
-    print(f"\t::::AI-Generated  texts: {sum(save_dict['wm_pred']) / len(save_dict['wm_pred']) * 100:.3f}%")
-    print(f"\t::::Human-Written texts: {(len(save_dict['wm_pred']) - sum(save_dict['wm_pred'])) / len(save_dict['wm_pred']) * 100:.3f}%")
+    print(f"\t::::AI-Generated  texts: {report['AI-Generated']:.3f}%")
+    print(f"\t::::Human-Written texts: {report['Human-Written']:.3f}%")
 
+    return report
 
 
 @torch.no_grad()
