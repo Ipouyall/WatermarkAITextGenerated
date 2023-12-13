@@ -110,6 +110,7 @@ GeneratorConfig(
     beam_size: {self.beam_size},
     top_k: {self.top_k},
     top_p: {self.top_p},
+    apply_watermarking: {self.apply_watermarking},
     fraction: {self.fraction},
     strength: {self.strength},
     gamma: {self.gamma},
