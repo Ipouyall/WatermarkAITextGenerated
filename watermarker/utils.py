@@ -3,7 +3,8 @@ from tqdm import tqdm
 import torch
 import gc
 import os
-from transformers import AutoModelForCausalLM, AutoTokenizer, LlamaTokenizer, LogitsProcessorList
+from transformers import (AutoModelForCausalLM, AutoModelForSeq2SeqLM,
+                          AutoTokenizer, LlamaTokenizer, LogitsProcessorList)
 
 from watermarker.processor import Processor
 from watermarker.detector import Detector
@@ -79,7 +80,10 @@ def run_generator(config):
         tokenizer = LlamaTokenizer.from_pretrained(config.model_name, torch_dtype=torch.float16)
     else:
         tokenizer = AutoTokenizer.from_pretrained(config.model_name, torch_dtype=torch.float16)
-    model = AutoModelForCausalLM.from_pretrained(config.model_name, device_map='auto')
+    if "t5" in config.model_name:
+        model = AutoModelForSeq2SeqLM.from_pretrained(config.model_name, device_map='auto')
+    else:
+        model = AutoModelForCausalLM.from_pretrained(config.model_name, device_map='auto')
     model.eval()
 
     watermark_processor = LogitsProcessorList([
@@ -123,7 +127,12 @@ def run_generator(config):
             continue
         prefix = cur_data['prefix']
 
-        batch = tokenizer(prefix, truncation=True, return_tensors="pt").to(model.device)
+        batch = tokenizer(
+            prefix,
+            truncation=True,
+            max_length=config.max_new_tokens,
+            return_tensors="pt"
+        ).to(model.device)
         num_tokens = len(batch['input_ids'][0])
 
         with torch.inference_mode():
