@@ -19,6 +19,13 @@ def write_file_append(filename, data):
     with open(filename, "a") as f:
         f.write("\n".join(data) + "\n")
 
+def fix_vocab_size_consider_model(model_name, p_vs):
+    if "opt" in model_name:
+        return 50272
+    elif "t5" in model_name:
+        return 32128
+    return p_vs
+
 
 def write_json_file(filename, data):
     with open(filename, "w") as f:
@@ -33,7 +40,7 @@ def run_detector(config):
     else:
         tokenizer = AutoTokenizer.from_pretrained(config.model_name, torch_dtype=torch.float16)
 
-    vocab_size = 50272 if "opt" in config.model_name else tokenizer.vocab_size
+    vocab_size = fix_vocab_size_consider_model(config.model_name, tokenizer.vocab_size)
 
     detector = Detector(
         fraction=config.fraction,
@@ -86,12 +93,14 @@ def run_generator(config):
         model = AutoModelForCausalLM.from_pretrained(config.model_name, device_map='auto')
     model.eval()
 
+    vocab_size = fix_vocab_size_consider_model(config.model_name, tokenizer.vocab_size)
+
     watermark_processor = LogitsProcessorList([
         Processor(
             fraction=config.fraction,
             strength=config.strength,
             gamma=config.gamma,
-            vocab_size=tokenizer.vocab_size,
+            vocab_size=vocab_size,
             watermark_key=config.hash_key
         )
     ])
