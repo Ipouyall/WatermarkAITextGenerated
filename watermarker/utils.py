@@ -66,6 +66,10 @@ def run_detector(config):
     print(f"\tWatermarked sequences:     {sum(save_dict['wm_pred'])} ({sum(save_dict['wm_pred']) / len(save_dict['wm_pred']) * 100:.3f}%)")
     print(f"\tNon-watermarked sequences: {len(save_dict['wm_pred']) - sum(save_dict['wm_pred'])} ({(len(save_dict['wm_pred']) - sum(save_dict['wm_pred'])) / len(save_dict['wm_pred']) * 100:.3f}%)")
     print(f"\tTotal sequences:           {len(save_dict['wm_pred'])}")
+    print(f"\tAverage z-score:           {sum(save_dict['z_score']) / len(save_dict['z_score'])}")
+
+    print(f"\t::::AI-Generated  texts: {sum(save_dict['wm_pred']) / len(save_dict['wm_pred']) * 100:.3f}%")
+    print(f"\t::::Human-Written texts: {(len(save_dict['wm_pred']) - sum(save_dict['wm_pred'])) / len(save_dict['wm_pred']) * 100:.3f}%")
 
 
 
