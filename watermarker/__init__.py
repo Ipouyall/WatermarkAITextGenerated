@@ -35,6 +35,21 @@ class DetectorConfig:
             print(f"        set gamma = {gamma}")
             self.gamma = gamma
 
+    def __repr__(self):
+        return f"""
+DetectorConfig(
+    input_file: {self.input_file},
+    model_name: {self.model_name},
+    fraction: {self.fraction},
+    strength: {self.strength},
+    gamma: {self.gamma},
+    hash_key: {self.hash_key},
+    watermark_threshold: {self.watermark_threshold},
+    min_sequence_tokens: {self.min_sequence_tokens},
+    mode: {self.mode},
+)
+        """
+
 
 @dataclass()
 class GeneratorConfig:
@@ -66,6 +81,26 @@ class GeneratorConfig:
             os.mkdir(self.output_directory)
 
         self.output_file = f"{self.output_directory}/{self.model_name.replace('/', '-')}_strength_{self.strength}_frac_{self.fraction}_len_{self.max_new_tokens}_num_{self.number_of_tests}.jsonl"
+
+    def __repr__(self):
+        return f"""
+GeneratorConfig(
+    model_name: {self.model_name},
+    output_directory: {self.output_directory},
+    prompt_file: {self.prompt_file},
+    max_new_tokens: {self.max_new_tokens},
+    number_of_tests: {self.number_of_tests},
+    checkpoint_frequency: {self.checkpoint_frequency},
+    beam_size: {self.beam_size},
+    top_k: {self.top_k},
+    top_p: {self.top_p},
+    fraction: {self.fraction},
+    strength: {self.strength},
+    gamma: {self.gamma},
+    hash_key: {self.hash_key},
+    output_file: {self.output_file if len(self.output_file) < 40 else self.output_file[:17] + ' ... '+ self.output_file[-17:]},
+)
+"""
 
 
 class Runner:
