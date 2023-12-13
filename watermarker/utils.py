@@ -57,10 +57,16 @@ def run_detector(config):
         'wm_pred': [1 if z > config.watermark_threshold else 0 for z in z_score_list]
     }
 
-    print(save_dict)
     write_json_file(config.input_file.replace('.jsonl', '_z.jsonl'), save_dict)
 
     print('Finished!')
+
+    print("Detector's report:")
+    print(f"\tWatermark threshold:       {config.watermark_threshold}")
+    print(f"\tWatermarked sequences:     {sum(save_dict['wm_pred'])} ({sum(save_dict['wm_pred']) / len(save_dict['wm_pred']) * 100:.3f}%)")
+    print(f"\tNon-watermarked sequences: {len(save_dict['wm_pred']) - sum(save_dict['wm_pred'])} ({(len(save_dict['wm_pred']) - sum(save_dict['wm_pred'])) / len(save_dict['wm_pred']) * 100:.3f}%)")
+    print(f"\tTotal sequences:           {len(save_dict['wm_pred'])}")
+
 
 
 @torch.no_grad()
