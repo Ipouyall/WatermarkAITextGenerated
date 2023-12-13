@@ -67,7 +67,7 @@ class GeneratorConfig:
     output_directory: str = "./data/LFQA/"
     prompt_file: str = "./data/LFQA/inputs.jsonl"
     max_new_tokens: int = 300
-    number_of_tests: int = 100
+    number_of_tests: int = 500
     checkpoint_frequency: int = 20
 
     apply_watermarking: bool = True
@@ -95,6 +95,8 @@ class GeneratorConfig:
             self.strength = 0
             self.fraction = 0
             self.gamma = 0
+
+        self.checkpoint_frequency = min(1 + self.number_of_tests//3, self.checkpoint_frequency)
 
         self.output_file = f"{self.output_directory}/{self.model_name.replace('/', '-')}_strength_{self.strength}_frac_{self.fraction}_len_{self.max_new_tokens}_num_{self.number_of_tests}.jsonl"
 
