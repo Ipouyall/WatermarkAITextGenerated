@@ -107,8 +107,10 @@ class Runner:
     @staticmethod
     def run(config: t.Union[DetectorConfig, GeneratorConfig]):
         if isinstance(config, DetectorConfig):
+            print("Starting the Detection task...")
             Runner._tun_detector(config)
         elif isinstance(config, GeneratorConfig):
+            print("Starting the Generation task...")
             Runner._run_generator(config)
         else:
             print(f"Unknown config {config.__class__.__name__}")
