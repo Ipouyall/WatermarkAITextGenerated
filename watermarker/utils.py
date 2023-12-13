@@ -87,19 +87,26 @@ def run_generator(config):
 
     outputs = []
 
+    base_generator_config = {
+        'output_scores': True,
+        'return_dict_in_generate': True,
+        'max_new_tokens': config.max_new_tokens,
+    }
+    if config.apply_watermarking:
+        base_generator_config['logits_processor'] = watermark_processor
+
     iter = tqdm(enumerate(data), total=min(len(data), config.number_of_tests), leave=False)
     for idx, cur_data in iter:
         if idx < num_cur_outputs or len(outputs) >= config.number_of_tests:
-            continue
+            break
 
         if "gold_completion" in cur_data:
-            prefix = cur_data['prefix']
             gold_completion = cur_data['gold_completion']
         elif 'targets' in cur_data:
-            prefix = cur_data['prefix']
             gold_completion = cur_data['targets'][0]
         else:
             continue
+        prefix = cur_data['prefix']
 
         batch = tokenizer(prefix, truncation=True, return_tensors="pt").to(model.device)
         num_tokens = len(batch['input_ids'][0])
@@ -107,10 +114,7 @@ def run_generator(config):
         with torch.inference_mode():
             generate_args = {
                 **batch,
-                'logits_processor': watermark_processor,
-                'output_scores': True,
-                'return_dict_in_generate': True,
-                'max_new_tokens': config.max_new_tokens,
+                **base_generator_config,
             }
 
             if config.beam_size is not None:

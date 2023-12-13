@@ -14,6 +14,7 @@ def adjust_long_str_len(text, length):
         return text[:l_prt] + "[...]" + text[-r_prt:]
     return text
 
+
 @dataclass()
 class DetectorConfig:
     input_file: str
@@ -69,6 +70,8 @@ class GeneratorConfig:
     number_of_tests: int = 100
     checkpoint_frequency: int = 20
 
+    apply_watermarking: bool = True
+
     beam_size: t.Union[int, None] = None
     top_k: t.Union[int, None] = None
     top_p: t.Union[float, None] = 0.8
@@ -87,6 +90,11 @@ class GeneratorConfig:
         if not os.path.exists(self.output_directory):
             print(f"Creating output directory: {self.output_directory}")
             os.mkdir(self.output_directory)
+
+        if not self.apply_watermarking:
+            self.strength = 0
+            self.fraction = 0
+            self.gamma = 0
 
         self.output_file = f"{self.output_directory}/{self.model_name.replace('/', '-')}_strength_{self.strength}_frac_{self.fraction}_len_{self.max_new_tokens}_num_{self.number_of_tests}.jsonl"
 
