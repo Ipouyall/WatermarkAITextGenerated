@@ -101,7 +101,7 @@ def run_generator(config):
         else:
             continue
 
-        batch = tokenizer(prefix, truncation=True, return_tensors="pt")
+        batch = tokenizer(prefix, truncation=True, return_tensors="pt").to(model.device)
         num_tokens = len(batch['input_ids'][0])
 
         with torch.inference_mode():
