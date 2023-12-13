@@ -101,10 +101,15 @@ def run_generator(config):
     if config.apply_watermarking:
         base_generator_config['logits_processor'] = watermark_processor
 
+    processed = 0
+
     iter = tqdm(enumerate(data), total=min(len(data), config.number_of_tests), leave=False)
     for idx, cur_data in iter:
-        if idx < num_cur_outputs or len(outputs) >= config.number_of_tests:
+        if processed >= config.number_of_tests:
             break
+        if idx < num_cur_outputs:
+            continue
+        processed += 1
 
         if "gold_completion" in cur_data:
             gold_completion = cur_data['gold_completion']
