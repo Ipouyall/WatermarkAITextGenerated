@@ -6,6 +6,14 @@ import os
 from watermarker.utils import run_generator, run_detector
 
 
+def adjust_long_str_len(text, length):
+    if len(text) > length:
+        prt = length // 2
+        l_prt = prt
+        r_prt = length - prt - 5
+        return text[:l_prt] + "[...]" + text[-r_prt:]
+    return text
+
 @dataclass()
 class DetectorConfig:
     input_file: str
@@ -38,7 +46,7 @@ class DetectorConfig:
     def __repr__(self):
         return f"""
 DetectorConfig(
-    input_file: {self.input_file},
+    input_file: {adjust_long_str_len(self.input_file, 50)},
     model_name: {self.model_name},
     fraction: {self.fraction},
     strength: {self.strength},
@@ -87,7 +95,7 @@ class GeneratorConfig:
 GeneratorConfig(
     model_name: {self.model_name},
     output_directory: {self.output_directory},
-    prompt_file: {self.prompt_file},
+    prompt_file: {adjust_long_str_len(self.prompt_file, 50)},
     max_new_tokens: {self.max_new_tokens},
     number_of_tests: {self.number_of_tests},
     checkpoint_frequency: {self.checkpoint_frequency},
@@ -98,7 +106,7 @@ GeneratorConfig(
     strength: {self.strength},
     gamma: {self.gamma},
     hash_key: {self.hash_key},
-    output_file: {self.output_file if len(self.output_file) < 40 else self.output_file[:17] + ' ... '+ self.output_file[-17:]},
+    output_file: {adjust_long_str_len(self.output_file, 50)},
 )
 """
 
