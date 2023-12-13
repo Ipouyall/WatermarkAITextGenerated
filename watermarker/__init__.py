@@ -9,7 +9,7 @@ from watermarker.utils import run_generator, run_detector
 @dataclass()
 class DetectorConfig:
     input_file: str
-    model_name: str
+    model_name: str = "facebook/opt-350m"
 
     fraction: float = .5
     strength: float = 2.
@@ -38,10 +38,10 @@ class DetectorConfig:
 
 @dataclass()
 class GeneratorConfig:
-    model_name: str
+    model_name: str = "facebook/opt-350m"
 
-    output_directory: str
-    prompt_file: str
+    output_directory: str = "./data/LFQA/"
+    prompt_file: str = "./data/LFQA/inputs.jsonl"
     max_new_tokens: int = 300
     number_of_tests: int = 100
     checkpoint_frequency: int = 20
