@@ -113,3 +113,4 @@ dmypy.json
 .pyre/
 .pytype/
 cython_debug/
+*/samples/*
