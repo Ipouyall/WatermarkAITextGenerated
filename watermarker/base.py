@@ -54,7 +54,6 @@ class Base:
 
     @staticmethod
     def _hash_fn(x: int) -> int:
-        """solution from https://stackoverflow.com/questions/67219691/python-hash-function-that-returns-32-or-64-bits"""
         x = np.int64(x)
         return int.from_bytes(hashlib.sha256(x).digest()[:4], 'little')
 
